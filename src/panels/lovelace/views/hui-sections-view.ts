@@ -58,6 +58,9 @@ export class SectionsView extends LitElement implements LovelaceViewElement {
 
     const editMode = this.lovelace.editMode;
 
+    const sectionCount = sectionsConfig.length + (editMode ? 1 : 0);
+    const maxColumnsCount = this._config?.max_columns;
+
     return html`
       ${this.badges.length > 0
         ? html`<div class="badges">${this.badges}</div>`
@@ -73,9 +76,8 @@ export class SectionsView extends LitElement implements LovelaceViewElement {
         <div
           class="container"
           style=${styleMap({
-            "--section-count": String(
-              sectionsConfig.length + (editMode ? 1 : 0)
-            ),
+            "--max-columns-count": maxColumnsCount,
+            "--section-count": sectionCount,
           })}
         >
           ${repeat(
@@ -235,7 +237,6 @@ export class SectionsView extends LitElement implements LovelaceViewElement {
     return css`
       :host {
         --grid-gap: 32px;
-        --grid-max-section-count: 4;
         --grid-section-min-width: 320px;
         --grid-section-max-width: 500px;
         display: block;
@@ -258,7 +259,7 @@ export class SectionsView extends LitElement implements LovelaceViewElement {
       }
 
       .container {
-        --max-count: min(var(--section-count), var(--grid-max-section-count));
+        --max-count: min(var(--section-count), var(--max-columns-count, 4));
         --max-width: min(
           calc(
             (var(--max-count) + 1) * var(--grid-section-min-width) +
